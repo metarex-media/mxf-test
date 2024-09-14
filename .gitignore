@@ -1,0 +1,7 @@
+*.exe
+#**/*.yaml
+tmp/*
+user/*
+megalinter-reports/*
+
+stream/testdata/testfile.txt

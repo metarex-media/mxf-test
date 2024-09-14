@@ -1,0 +1,62 @@
+---
+# yamllint disable rule:colons
+# clog Jumbo "clog.core.config"  --font straight
+#                                             _
+#  _ |  _   _      _  _   _  _     _  _   _  (_ .  _
+# (_ | (_) (_) .  (_ (_) |  (- .  (_ (_) | ) |  | (_)
+#          _/                                     _/
+### when clog starts it uses these config values. clog then looks for a file
+###    called `clog.config.yaml` in each of the folders specified in the
+###    `clog.clogrc.searchOrder` property in the embeded config. Every time a
+###    match is found it starts the loop again because you might have changed
+###    the search order. Don't make loops - that's dumb.
+###    The last config files loaded have the values used.
+
+###    Finally - an external configSource can be specified for each of the root
+###    keys - this is because those config are probably project specific and
+###    change at a different rate to the main config. They are loaded last.
+
+# --- clog internals ----------------------------------------------------------
+clog:
+  api:
+    # api mappings when the server is used
+    - route:
+  clogrc:
+    configFileBase: clog.config
+    configFormat: yaml
+    # the search order for the config files. The last file found in the list
+    # values higher in the search order are overwritten by values lower down
+    # e.g. $HOME/.config/clogrc/clog.config.yaml is overridden by ./clogrc/clog.config.yaml
+    searchOrder:
+      - /var/clogrc/
+      - $HOME/.config/clogrc/
+      - ./clogrc/
+  # these are the ENV variables that are searched for by the library
+  # override these in a local repo if you need th change the names
+  env:
+    dbToken: DB_ROACH
+    awsAccess: AWS_ACCESS_KEY_ID
+    awsSecret: AWS_ACCESS_KEY
+    gitLabAccessToken: GLAT
+    gitHubAccessToken: GHAT
+    gitHubGistToken: GHGIST
+    stashId: CLOG_STASH_ID
+    gitHubUser: GHUSR
+    gitSshPublicKey: GIT_SSH_PUBLIC_KEY
+  homeFolder: set at runtime
+  # clog Jumbo --help to see the full font list
+  jumbo:
+    font: small
+    sample: www.mrmxf.com
+  version:
+    # set at runtime from /releases.yaml
+    short: 0.0.0
+    long: 0.0.0-type-hash
+
+# --- clog Check --------------------------------------------------------------
+check:
+  # checkLogLevel: debug | info | warn | error - all go to stdErr
+  checkLogLevel: Info
+  # logHandler: default | plain - default pretty handler for humans
+  logHandler: default
+

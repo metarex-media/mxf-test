@@ -1,0 +1,5 @@
+{
+    "A" : "Test",
+    "pass": false,
+    "note": "this is a json file that should fail all xml validation"
+}

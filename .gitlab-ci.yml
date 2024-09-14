@@ -1,0 +1,56 @@
+---
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH =="main"
+stages:
+  - check
+  - test
+  - build
+  - lint
+  
+default:
+  image: golang:latest
+bark:
+  stage: check
+  script:
+    - echo "Basic check that tags, branches etc are right"
+    - curl https://mrmxf.com/get/clog | bash
+    - clog Docker IsRunningClog
+    - clog Check
+    - clog Check gitlab
+
+
+tester:
+  stage: test
+  script:
+    - go test ./... -v
+
+build:
+  stage: build
+  needs: [bark]
+  script:
+    - curl https://mrmxf.com/get/clog | bash
+    - go get
+    - clog build
+  artifacts:
+    when: always
+    name: $CI_COMMIT_REF_SLUG-$CI_JOB_STAGE
+    paths:
+      - tmp/
+    expire_in: 1 day
+
+# megalinter also formats
+mega-linter:
+  stage: lint
+  needs:
+    - tester
+  image: oxsecurity/megalinter-go:v7.13.0
+  script:
+    - "true"
+  variables:
+    DEFAULT_WORKSPACE: $CI_PROJECT_DIR
+  artifacts:
+    when: always
+    paths:
+      - megalinter-reports
+    expire_in: 1 week

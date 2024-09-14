@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Metarex NAB Demo 03 output schema",
+    "description": "The Schema for an array of W3C gps api",
+    "type": "array",
+    "properties": {
+        "timestamp": {
+            "type": "integer"
+        },
+        "coords": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "altitude": {
+                    "type": "number"
+                },
+                "altitudeAccuracy": {
+                    "type": "number"
+                },
+                "heading": {
+                    "type": "number"
+                },
+                "speed": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "latitude",
+                "longitude"
+            ]
+        }
+    },
+    "required": [
+        "coords"
+    ]
+}

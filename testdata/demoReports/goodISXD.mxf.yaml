@@ -1,0 +1,101 @@
+testpass: true
+tests:
+    - header: testing mxf file structure
+      tests:
+        - message: |
+            RDD47:2018,5.4,shall,3: Checking that the generic partition positions match the expected positions at the end of the file
+          checks:
+            - pass: true
+            - pass: true
+            - pass: true
+            - pass: true
+        - message: |
+            RDD47:2018,5.3,shall,1: Checking only xml data is contained in the ISXD file
+          checks:
+            - pass: true
+            - pass: true
+            - pass: true
+        - message: |
+            RDD47:2018,5.3,shall,2: Checking every XML file has the same root element
+          checks:
+            - pass: true
+            - pass: true
+        - message: |
+            RDD47:2018,9.2,shall,1: Checking that the ISXD descriptor is present
+          checks:
+            - pass: true
+            - pass: true
+            - pass: true
+        - message: |
+            RDD47:2018,9.3,table4,3: Checking that the NameSpaceURI field is present in the ISXD descriptor
+          checks:
+            - pass: true
+            - pass: true
+        - message: |
+            RDD47:2018,5.3,shall,2: Checking that the NameSpaceURI field of http://www.example.com matches the values given in the essence across the file
+          checks:
+            - pass: true
+            - pass: true
+            - pass: true
+      pass: true
+      passcount: 17
+      failcount: 0
+    - header: testing header metadata of a header partition at offset 0
+      tests:
+        - message: |
+            RDD47:2018,9.2,shall,1: Checking that the ISXD descriptor is present in the header metadata
+          checks:
+            - pass: true
+        - message: |
+            RDD47:2018,9.3,shall,1: Checking that the data essence coding field is present in the ISXD descriptor
+          checks:
+            - pass: true
+            - pass: true
+      pass: true
+      passcount: 3
+      failcount: 0
+    - header: testing header properties of a header partition at offset 0
+      tests:
+        - message: |
+            RDD47:2018,5.4,shall,1: Checking there is no error getting the generic partition streams
+          checks:
+            - pass: true
+      pass: true
+      passcount: 1
+      failcount: 0
+    - header: testing essence properties at body partition at offset 2499
+      tests:
+        - message: |
+            RDD47:2018,7.5,shall,1: Checking that the only ISXD essence keys are found in body partitions
+          checks:
+            - pass: true
+            - pass: true
+      pass: true
+      passcount: 2
+      failcount: 0
+    - header: testing header metadata of a footer partition at offset 11294
+      tests:
+        - message: |
+            RDD47:2018,9.2,shall,1: Checking that the ISXD descriptor is present in the header metadata
+          checks:
+            - pass: true
+        - message: |
+            RDD47:2018,9.3,shall,1: Checking that the data essence coding field is present in the ISXD descriptor
+          checks:
+            - pass: true
+            - pass: true
+      pass: true
+      passcount: 3
+      failcount: 0
+    - header: testing header properties of a footer partition at offset 11294
+      tests:
+        - message: |
+            RDD47:2018,5.4,shall,1: Checking there is no error getting the generic partition streams
+          checks:
+            - pass: true
+      pass: true
+      passcount: 1
+      failcount: 0
+skippedTests:
+    - testkey: generickey
+      desc: a skipped partition test
