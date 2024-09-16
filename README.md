@@ -107,7 +107,7 @@ Therefore you can skip the finding and validating parts of the MXF file that may
 The MXF tree is detailed [here](#traversing-the-mxf-file)
 and is important for understanding how the tests work.
 Once you have read how to traverse the MXF file,
-a complete demo of writing tests is provided [here.](#Building Custom Tests)
+a complete demo of writing tests is provided [here.](#building-custom-tests)
 
 ### Traversing the MXF file
 
@@ -192,7 +192,7 @@ make sure you have the following imports.
 ```go
 import (
   "io"
-  "github.com/metarex-media/mrx-tool/mrxUnitTest"
+  mxftest "github.com/metarex-media/mxf-test"
   mxf2go "github.com/metarex-media/mxf-to-go"
   . "github.com/onsi/gomega"
 )
@@ -201,7 +201,7 @@ import (
 Which can be imported with
 
 ```cmd
-go get github.com/metarex-media/mrx-tool/mrxUnitTest
+go get github.com/metarex-media/mxf-test
 go get github.com/metarex-media/mxf-to-go
 go get github.com/onsi/gomega
 ```
@@ -635,7 +635,7 @@ in the following code.
 
 ```go
 const (
- // MIME is the xml mimetype
+ // Content is the xml content type
  Content mxftest.CType = "application/json"
 )
 

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	// MIME is the JSON content type
+	// Content is the JSON content type
 	Content mxftest.CType = "application/json"
 )
 
