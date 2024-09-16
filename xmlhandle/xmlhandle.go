@@ -7,12 +7,12 @@ import (
 	"io"
 
 	"github.com/antchfx/xmlquery"
-	"gitlab.com/mm-eng/mxftest"
+	mxftest "github.com/metarex-media/mxf-test"
 )
 
 const (
-	// MIME is the xml ContentType
-	MIME mxftest.CType = "text/xml"
+	// Content is the xml ContentType
+	Content mxftest.CType = "text/xml"
 )
 
 // xml identifier function, returns true of the data stream is
@@ -43,7 +43,7 @@ func xMLIdentifier(data []byte) bool {
 }
 
 // DataIdentifier is the xml identifier function
-var DataIdentifier = mxftest.DataIdentifier{DataFunc: xMLIdentifier, ContentType: MIME}
+var DataIdentifier = mxftest.DataIdentifier{DataFunc: xMLIdentifier, ContentType: Content}
 
 type contKey struct {
 	path, functionName string
@@ -51,6 +51,8 @@ type contKey struct {
 
 // PathSniffer searches an XML document for that path
 // and stores the key value of the Node
+//
+// It searches using the xPath library https://github.com/antchfx/xpath
 func PathSniffer(sc mxftest.SniffContext, path string) mxftest.Sniffer {
 
 	pathKey := contKey{path: path, functionName: "the path sniffer function using xpath"}

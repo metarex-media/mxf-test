@@ -5,9 +5,9 @@ import (
 	"io"
 	"os"
 
+	mxftest "github.com/metarex-media/mxf-test"
 	mxf2go "github.com/metarex-media/mxf-to-go"
 	. "github.com/onsi/gomega"
-	"gitlab.com/mm-eng/mxftest"
 )
 
 func RunNodeDemo() {

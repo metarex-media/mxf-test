@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"gitlab.com/mm-eng/mxftest"
-	"gitlab.com/mm-eng/mxftest/jsonhandle"
+	mxftest "github.com/metarex-media/mxf-test"
+	"github.com/metarex-media/mxf-test/jsonhandle"
 
 	_ "embed"
 

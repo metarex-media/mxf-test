@@ -3,12 +3,12 @@ package jsonhandle
 import (
 	"encoding/json"
 
+	mxftest "github.com/metarex-media/mxf-test"
 	"github.com/santhosh-tekuri/jsonschema/v6"
-	"gitlab.com/mm-eng/mxftest"
 )
 
 const (
-	// MIME is the JSON content type
+	// Content is the JSON content type
 	Content mxftest.CType = "application/json"
 )
 
