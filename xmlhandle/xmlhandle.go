@@ -7,7 +7,7 @@ import (
 	"io"
 
 	"github.com/antchfx/xmlquery"
-	"gitlab.com/mm-eng/mxftest"
+	mxftest "github.com/metarex-media/mxf-test"
 )
 
 const (
