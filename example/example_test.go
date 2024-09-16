@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
+	mxftest "github.com/metarex-media/mxf-test"
 	. "github.com/smartystreets/goconvey/convey"
-	"gitlab.com/mm-eng/mxftest"
 	"gopkg.in/yaml.v3"
 )
 

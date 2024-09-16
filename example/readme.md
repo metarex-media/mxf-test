@@ -54,4 +54,4 @@ Does the gps demo file still pass.
 - if you have any mxf files, try plugging them into the tests in this repl see if they pass.
 
 [g1]:   https://go.dev/doc/install      "Golang Installation"
-[git]: https://gitlab.com/mm-eng/mxftest "The git repo that this repl is testing"
+[git]: https://github.com/metarex-media/mxf-test "The git repo that this repl is testing"

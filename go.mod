@@ -1,4 +1,4 @@
-module gitlab.com/mm-eng/mxftest
+module github.com/metarex-media/mxf-test
 
 go 1.22.0
 

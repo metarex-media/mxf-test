@@ -1,5 +1,7 @@
 # MXF Test
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/metarex-media/mxf-test.svg)](https://pkg.go.dev/github.com/metarex-media/mxf-test)
+
 MRX Unit Test is a library for testing MXF [(Material Exchange Format)][MXF] and MRX [(Metarex.media)][MRX] files.
 
 This library provides the api for designing your own tests.

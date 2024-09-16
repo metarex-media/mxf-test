@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
+	mxftest "github.com/metarex-media/mxf-test"
+	"github.com/metarex-media/mxf-test/xmlhandle"
 	mxf2go "github.com/metarex-media/mxf-to-go"
 	. "github.com/onsi/gomega"
-	"gitlab.com/mm-eng/mxftest"
-	"gitlab.com/mm-eng/mxftest/xmlhandle"
 )
 
 // ISXDDoc is the document the specs for
