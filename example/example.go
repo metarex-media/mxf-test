@@ -248,7 +248,7 @@ func checkDataTypes(_ io.ReadSeeker, mxf *mxftest.MXFNode) func(t mxftest.Test) 
 		partitions, bErr := mxf.Search("select * from partitions where essence <> 0")
 		var xmlSearchErr error
 		for _, parts := range partitions {
-			nonXml, xmlSearchErr := parts.Search(fmt.Sprintf("select * from essence where sniff:%s <> %s", mxftest.ContentTypeKey, xmlhandle.MIME))
+			nonXml, xmlSearchErr := parts.Search(fmt.Sprintf("select * from essence where sniff:%s <> %s", mxftest.ContentTypeKey, xmlhandle.Content))
 			if xmlSearchErr != nil {
 				break
 			}
