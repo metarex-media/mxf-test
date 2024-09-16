@@ -3,9 +3,9 @@ package example
 import (
 	"io"
 
+	mxftest "github.com/metarex-media/mxf-test"
+	"github.com/metarex-media/mxf-test/xmlhandle"
 	. "github.com/onsi/gomega"
-	"gitlab.com/mm-eng/mxftest"
-	"gitlab.com/mm-eng/mxftest/xmlhandle"
 )
 
 // R133Specifications returns all the specifications
