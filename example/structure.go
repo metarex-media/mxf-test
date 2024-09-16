@@ -5,10 +5,9 @@ import (
 	"io"
 	"os"
 
-	"gitlab.com/mm-eng/mxftest"
-
 	_ "embed"
 
+	mxftest "github.com/metarex-media/mxf-test"
 	. "github.com/onsi/gomega"
 )
 

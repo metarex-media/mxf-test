@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	mxftest "github.com/metarex-media/mxf-test"
 	. "github.com/smartystreets/goconvey/convey"
-	"gitlab.com/mm-eng/mxftest"
 )
 
 var (
