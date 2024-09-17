@@ -72,6 +72,8 @@ func TestSniffPath(t *testing.T) {
 
 	expectedNameSpace := []string{"", "example.com", "http://www.w3.org/ns/ttml"}
 
+	expectedRoot := []string{"CATALOG", "breakfast_menu", "tt"}
+
 	for i, f := range goodFiles {
 		path, _ := filepath.Abs(f)
 		xmlBytes, readErr := os.ReadFile(path)
@@ -87,42 +89,45 @@ func TestSniffPath(t *testing.T) {
 			})
 		})
 
-		nameSpaceFinder := PathSniffer(sc, "namespace-uri(/*)")
-		nsf := *nameSpaceFinder
 		rootFinder := PathSniffer(sc, "/*")
 		rf := *rootFinder
 
-		goodFiles, _ := os.ReadDir("./testdata/goodxml")
-		expectedNameSpace := []string{"", "example.com", "http://www.w3.org/ns/ttml"}
-		expectedRoot := []string{"CATALOG", "breakfast_menu", "tt"}
+		// check the root finder
+		// any other xpath is on the user
+		rootRes := rf(xmlBytes)
 
-		for i, f := range goodFiles {
-			path, _ := filepath.Abs("./testdata/goodxml/" + f.Name())
-			xmlBytes, readErr := os.ReadFile(path)
-
-			nameSpaceRes := nsf(xmlBytes)
-
-			Convey("Checking the xml name space sniffer works", t, func() {
-				Convey(fmt.Sprintf("searching with the key of namespace-uri(/*) within %s", f.Name()), func() {
-					Convey(fmt.Sprintf("A namespace of \"%s\" is found", expectedNameSpace[i]), func() {
-						So(readErr, ShouldBeNil)
-						So(nameSpaceRes.Field, ShouldResemble, expectedNameSpace[i])
-					})
+		Convey("Checking the xml xpath sniffer works", t, func() {
+			Convey(fmt.Sprintf("searching with the key of /* within %s", f), func() {
+				Convey(fmt.Sprintf("A root of \"%s\" is found", expectedRoot[i]), func() {
+					So(rootRes.Field, ShouldResemble, expectedRoot[i])
 				})
 			})
+		})
 
-			// check the root finder
-			// any other xpath is on the user
-			rootRes := rf(xmlBytes)
-
-			Convey("Checking the xml xpath sniffer works", t, func() {
-				Convey(fmt.Sprintf("searching with the key of /* within %s", f.Name()), func() {
-					Convey(fmt.Sprintf("A root of \"%s\" is found", expectedRoot[i]), func() {
-						So(rootRes.Field, ShouldResemble, expectedRoot[i])
-					})
-				})
-			})
-
-		}
 	}
+
+	testF := "./testdata/goodxml/ttml.xml"
+	xmlBytes, _ := os.ReadFile(testF)
+	commands := []string{"/tt/@xml:lang", "/*", "/tt/head/metadata/ttm:title"}
+	outs := []string{"en", "tt", "title"}
+
+	for i, c := range commands {
+
+		sniff := PathSniffer(sc, c)
+		sf := *sniff
+
+		// check the root finder
+		// any other xpath is on the user
+		rootRes := sf(xmlBytes)
+
+		Convey("Checking the xml name xpath sniffer works", t, func() {
+			Convey(fmt.Sprintf("searching with the key of %s within %s", c, testF), func() {
+				Convey(fmt.Sprintf("A result of \"%s\" is found", outs[i]), func() {
+					So(rootRes.Field, ShouldResemble, outs[i])
+				})
+			})
+		})
+
+	}
+
 }
