@@ -73,6 +73,8 @@ func testGenericPartitionForTT(_ io.ReadSeeker, header *mxftest.PartitionNode) f
 			t.Expect(len(nonttml)).Shall(Equal(0), "uh oh, does not contain TTML"),
 			t.Expect(len(header.Essence)).ShallNot(Equal(0), "no essence found in the generic partition"),
 		)
+
+		// then check the children pass the schema
 	}
 }
 

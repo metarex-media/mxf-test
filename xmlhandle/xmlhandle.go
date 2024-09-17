@@ -53,6 +53,13 @@ type contKey struct {
 // and stores the key value of the Node
 //
 // It searches using the xPath library https://github.com/antchfx/xpath
+/*
+
+Common searches include:
+
+- "/*" - find the root element
+- "namespace-uri(/*)" - find the namespace of the root element
+*/
 func PathSniffer(sc mxftest.SniffContext, path string) mxftest.Sniffer {
 
 	pathKey := contKey{path: path, functionName: "the path sniffer function using xpath"}
@@ -96,7 +103,15 @@ func PathSniffer(sc mxftest.SniffContext, path string) mxftest.Sniffer {
 				return mxftest.SniffResult{}
 			}
 
-			return mxftest.SniffResult{Key: path, Field: out.Data, Certainty: 100}
+			var value string
+			switch out.Type {
+			case xmlquery.AttributeNode:
+				value = out.InnerText()
+			default:
+				value = out.Data
+			}
+
+			return mxftest.SniffResult{Key: path, Field: value, Certainty: 100}
 		}
 
 		xmlSniff = &mid
