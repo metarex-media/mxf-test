@@ -104,7 +104,6 @@ func PathSniffer(sc mxftest.SniffContext, path string) mxftest.Sniffer {
 			}
 
 			var value string
-
 			switch out.Type {
 			case xmlquery.AttributeNode:
 				value = out.InnerText()
