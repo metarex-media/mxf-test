@@ -129,7 +129,7 @@ func TestTests(t *testing.T) {
 
 		var buf bytes.Buffer
 		testErr := MRXTest(f, &buf, s)
-
+		fmt.Println(buf.String(), "HERE")
 		var rep Report
 		marshErr := yaml.Unmarshal(buf.Bytes(), &rep)
 
