@@ -708,7 +708,7 @@ or pull request with the proposed update.
 [r133]: https://tech.ebu.ch/docs/r/r133.pdf "The ebu specification for R133"
 [rdd47]: https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8552735 "The rdd 47 specification"
 [AST]: https://en.wikipedia.org/wiki/Abstract_syntax_tree "The wikipedia of abstract syntax trees"
-[mrx]: https://metarex.media "The metarex media website"
+[mrx]: https://metarex.media "The Metarex media website"
 [mxf]: https://en.wikipedia.org/wiki/Material_Exchange_Format "The Material exchange format wikipedia"
 [mrxTool]: https://github.com/metarex-media/mrx-tool/tree/main/mrxUnitTest "Mrx tool test folder for running the mxf tests"
 [gomega]: https://github.com/onsi/gomega "the gomega assertion library"

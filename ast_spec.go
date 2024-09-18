@@ -37,17 +37,18 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 	// testStructure
 	tc := NewTestContext(w)
 
-	// load in default of 377 checker etc
-	tc.Header("testing mxf file structure", func(t Test) {
-		for _, structure := range ast.Tests.tests {
-			if *structure.runTest {
-				str := *structure.test
-				str(doc, ast)(t)
+	// only test the structure id there's any tests
+	if len(ast.Tests.tests) > 0 {
+		// load in default of 377 checker etc
+		tc.Header("testing mxf file structure", func(t Test) {
+			for _, structure := range ast.Tests.tests {
+				if *structure.runTest {
+					str := *structure.test
+					str(doc, ast)(t)
+				}
 			}
-		}
-	})
-
-	// 	tc.structureTest(doc, ast, specifications...)
+		})
+	}
 
 	for _, part := range ast.Partitions {
 
@@ -59,24 +60,29 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 				// delete the map key for tests of this type
 				delete(skips.Part, string(Header))
 
-				tc.Header(fmt.Sprintf("testing header metadata of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
+				// set up a test context that only runs if any nodes have metadata
+				nodeTest := make([]*Node, 0)
+				for _, child := range part.HeaderMetadata {
+					nodeTest = append(nodeTest, testChildNodes(child)...)
+				}
+				// only run the tests if any nodes have tests
+				if len(nodeTest) > 0 {
+					runNodeTests(doc, tc, nodeTest, *part, skips)
+				}
 
-					for _, child := range part.HeaderMetadata {
-						testChildNodes(doc, child, part.Props.Primer, t, skips)
-					}
-				})
-
-				tc.Header(fmt.Sprintf("testing header properties of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
-					for _, child := range part.Tests.tests {
-						if *child.runTest {
-							childer := *child.test
-							childer(doc, part)(t)
-							if !t.testPass() {
-								part.FlagFail()
+				if len(part.Tests.tests) > 0 {
+					tc.Header(fmt.Sprintf("testing header properties of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
+						for _, child := range part.Tests.tests {
+							if *child.runTest {
+								childer := *child.test
+								childer(doc, part)(t)
+								if !t.testPass() {
+									part.FlagFail()
+								}
 							}
 						}
-					}
-				})
+					})
+				}
 			}
 		//	tc.headerTest(doc, part, specifications...)
 		case BodyPartition, GenericStreamPartition:
@@ -86,18 +92,19 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 			} else {
 				delete(skips.Part, string(GenericBody))
 			}
-
-			tc.Header(fmt.Sprintf("testing essence properties at %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
-				for _, tests := range part.Tests.tests {
-					if *tests.runTest {
-						test := *tests.test
-						test(doc, part)(t)
-						if !t.testPass() {
-							part.FlagFail()
+			if len(part.Tests.tests) > 0 {
+				tc.Header(fmt.Sprintf("testing essence properties at %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
+					for _, tests := range part.Tests.tests {
+						if *tests.runTest {
+							test := *tests.test
+							test(doc, part)(t)
+							if !t.testPass() {
+								part.FlagFail()
+							}
 						}
 					}
-				}
-			})
+				})
+			}
 		//	tc.essTest(doc, part, specifications...)
 		case RIPPartition:
 			// not sure what happens here yet
@@ -331,27 +338,57 @@ func cloneSpeciifcation(base Specifications) Specifications {
 	return skips
 }
 
-// testChildNodes run any tests on the metadata and their children
-func testChildNodes(doc io.ReadSeeker, node *Node, primer map[string]string, t Test, skips Specifications) {
+// runNodeTests runs the tests of all the nodes
+func runNodeTests(doc io.ReadSeeker, tc *TestContext, nodeTest []*Node, part PartitionNode, skips Specifications) {
+	tc.Header(fmt.Sprintf("testing header metadata of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
 
-	if node == nil {
-		return
-	}
+		for _, node := range nodeTest {
+			for _, tester := range node.Tests.testsWithPrimer {
+				delete(skips.Node, node.Properties.UL())
 
-	for _, tester := range node.Tests.testsWithPrimer {
-		delete(skips.Node, node.Properties.UL())
-		if *tester.runTest {
-			test := *tester.test
-			test(doc, node, primer)(t)
-			if !t.testPass() {
-				node.FlagFail()
+				if *tester.runTest {
+					test := *tester.test
+					test(doc, node, part.Props.Primer)(t)
+
+					if !t.testPass() {
+						node.FlagFail()
+					}
+				}
 			}
 		}
+	})
+}
+
+// testChildNodes run any tests on the metadata and their children
+func testChildNodes(node *Node) []*Node {
+
+	if node == nil {
+		return []*Node{}
 	}
 
-	for _, child := range node.Children {
-		testChildNodes(doc, child, primer, t, skips)
+	var nodes []*Node
+	if len(node.Tests.testsWithPrimer) > 0 {
+		nodes = []*Node{node}
 	}
+	/*
+		for _, tester := range node.Tests.testsWithPrimer {
+			delete(skips.Node, node.Properties.UL())
+
+			if *tester.runTest {
+				test := *tester.test
+				test(doc, node, primer)(mdt.test)
+				fmt.Println(mdt.test.testPass())
+				if !mdt.test.testPass() {
+					node.FlagFail()
+				}
+			}
+		}*/
+
+	for _, child := range node.Children {
+		nodes = append(nodes, testChildNodes(child)...)
+	}
+
+	return nodes
 }
 
 /*
