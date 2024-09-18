@@ -67,23 +67,7 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 				}
 				// only run the tests if any nodes have tests
 				if len(nodeTest) > 0 {
-					tc.Header(fmt.Sprintf("testing header metadata of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
-
-						for _, node := range nodeTest {
-							for _, tester := range node.Tests.testsWithPrimer {
-								delete(skips.Node, node.Properties.UL())
-
-								if *tester.runTest {
-									test := *tester.test
-									test(doc, node, part.Props.Primer)(t)
-
-									if !t.testPass() {
-										node.FlagFail()
-									}
-								}
-							}
-						}
-					})
+					runNodeTests(doc, tc, nodeTest, *part, skips)
 				}
 
 				if len(part.Tests.tests) > 0 {
@@ -352,6 +336,27 @@ func cloneSpeciifcation(base Specifications) Specifications {
 	}
 
 	return skips
+}
+
+// runNodeTests runs the tests of all the nodes
+func runNodeTests(doc io.ReadSeeker, tc *TestContext, nodeTest []*Node, part PartitionNode, skips Specifications) {
+	tc.Header(fmt.Sprintf("testing header metadata of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
+
+		for _, node := range nodeTest {
+			for _, tester := range node.Tests.testsWithPrimer {
+				delete(skips.Node, node.Properties.UL())
+
+				if *tester.runTest {
+					test := *tester.test
+					test(doc, node, part.Props.Primer)(t)
+
+					if !t.testPass() {
+						node.FlagFail()
+					}
+				}
+			}
+		}
+	})
 }
 
 // testChildNodes run any tests on the metadata and their children
