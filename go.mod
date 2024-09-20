@@ -1,6 +1,6 @@
 module github.com/metarex-media/mxf-test
 
-go 1.22.0
+go 1.23.1
 
 require (
 	github.com/antchfx/xmlquery v1.4.1
