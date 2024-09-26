@@ -37,8 +37,8 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 	// testStructure
 	tc := NewTestContext(w)
 
+	validTests := validTestCount(ast.Tests.tests)
 	// only test the structure id there's any tests
-	if len(ast.Tests.tests) > 0 {
 		// load in default of 377 checker etc
 		tc.Header("testing mxf file structure", func(t Test) {
 			for _, structure := range ast.Tests.tests {
@@ -65,12 +65,20 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 				for _, child := range part.HeaderMetadata {
 					nodeTest = append(nodeTest, testChildNodes(child)...)
 				}
+
+				validNodeTest := 0
+				for _, nt := range nodeTest {
+					// delete the skipped keys anyway to prevent untagged files turning up
+					delete(skips.Node, nt.Properties.UL())
+					validNodeTest += validTestWithPrimerCount(nt.Tests.testsWithPrimer)
+				}
 				// only run the tests if any nodes have tests
-				if len(nodeTest) > 0 {
+				if validNodeTest > 0 {
 					runNodeTests(doc, tc, nodeTest, *part, skips)
 				}
 
-				if len(part.Tests.tests) > 0 {
+				validPartTests := validTestCount(part.Tests.tests)
+				if validPartTests > 0 {
 					tc.Header(fmt.Sprintf("testing header properties of a %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
 						for _, child := range part.Tests.tests {
 							if *child.runTest {
@@ -92,7 +100,10 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 			} else {
 				delete(skips.Part, string(GenericBody))
 			}
-			if len(part.Tests.tests) > 0 {
+
+			validPartTests := validTestCount(part.Tests.tests)
+			if validPartTests > 0 {
+
 				tc.Header(fmt.Sprintf("testing essence properties at %s partition at offset %v", part.Props.PartitionType, part.Key.Start), func(t Test) {
 					for _, tests := range part.Tests.tests {
 						if *tests.runTest {
@@ -123,6 +134,28 @@ func MRXTest(doc io.ReadSeeker, w io.Writer, testspecs ...Specifications) error 
 	}
 
 	return tc.EndTest()
+}
+
+func validTestCount[n Nodes](tests []markedTest[n]) int {
+	validTests := 0
+	for _, structure := range tests {
+		if *structure.runTest {
+			validTests++
+		}
+	}
+
+	return validTests
+}
+
+func validTestWithPrimerCount[n Nodes](tests []markedTestWithPrimer[n]) int {
+	validTests := 0
+	for _, structure := range tests {
+		if *structure.runTest {
+			validTests++
+		}
+	}
+
+	return validTests
 }
 
 // run tags runs the specification tags before the actual tests,
@@ -200,8 +233,8 @@ func runTags(doc io.ReadSeeker, ast *MXFNode, skips Specifications) {
 
 	// fail all skipped tests
 
-	for k, nodeTests := range skips.markerNode {
-		fmt.Println(k)
+	for _, nodeTests := range skips.markerNode {
+
 		for _, test := range nodeTests {
 			*test.runTest = false
 		}
@@ -377,7 +410,9 @@ func testChildNodes(node *Node) []*Node {
 			if *tester.runTest {
 				test := *tester.test
 				test(doc, node, primer)(mdt.test)
-				fmt.Println(mdt.test.testPass())
+
+				github.com/metarex-media/mxf-testln(mdt.test.testPass())
+
 				if !mdt.test.testPass() {
 					node.FlagFail()
 				}
